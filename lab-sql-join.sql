@@ -22,10 +22,19 @@ WHERE p.payment_date >= '2005-08-01' AND p.payment_date < '2005-09-01'
 GROUP BY s.staff_id
 ORDER BY s.last_name;
 
+# If I also want to display the staff members that have not rung up any payments in August.
+SELECT s.first_name, s.last_name, SUM(p.amount) AS total_amount
+FROM staff AS s
+LEFT JOIN payment AS p ON s.staff_id = p.staff_id 
+                             AND p.payment_date >= '2005-08-01' 
+                             AND p.payment_date < '2005-09-01'
+GROUP BY s.staff_id
+ORDER BY s.last_name;
+
 # 4. List all films and the number of actors who are listed for each film.
 SELECT f.title AS film_title, COUNT(fa.actor_id) AS num_actors 
 FROM film AS f
-#I also want the films that have no actors listed hence LEFT JOIN with table film on the left
+# I also want the films that have no actors listed hence LEFT JOIN with table film on the left.
 LEFT JOIN film_actor AS fa ON f.film_id = fa.film_id
 GROUP BY f.title
 ORDER BY num_actors;
@@ -34,7 +43,8 @@ ORDER BY num_actors;
 # paid by each customer. List the customers alphabetically by their last names.
 SELECT c.first_name, c.last_name, SUM(p.amount) AS total_paid
 FROM customer AS c
-# I use a LEFT JOIN to ensure that all customers are included in the results, even if they have not made any payments. 
+# I use a LEFT JOIN with table customer on the left to ensure that all customers are included in the
+# results, even if they have not made any payments. 
 LEFT JOIN payment AS p ON c.customer_id = p.customer_id
 GROUP BY c. first_name, c.last_name
 ORDER BY c.last_name;
